@@ -82,6 +82,7 @@ const RoomPage = () => {
     peer.peer.addEventListener("track", async (ev) => {
       const remoteStream = ev.streams;
       console.log("GOT TRACKS!!");
+      console.log({ remoteStream });
       setRemoteStream(remoteStream[0]);
     });
   }, []);
@@ -89,8 +90,7 @@ const RoomPage = () => {
   // Capture local audio stream
   const getLocalAudioStream = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      return stream;
+      return await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (error) {
       console.error("Error accessing local audio stream:", error);
     }
@@ -101,8 +101,13 @@ const RoomPage = () => {
     const localStream = await getLocalAudioStream();
     if (localStream) {
       localStream.getTracks().forEach((track) => {
-        console.log({ peer });
-        peer.peer.addTrack(track, localStream);
+        if (peer && typeof peer.addTrack === "function") {
+          peer.addTrack(track, localStream);
+        } else {
+          console.error(
+            "peer is not correctly initialized or does not support addTrack method"
+          );
+        }
       });
     }
   }, []);
@@ -146,6 +151,8 @@ const RoomPage = () => {
     handleNegoNeedIncomming,
     handleNegoNeedFinal,
   ]);
+
+  console.log({ remoteStream });
 
   return (
     <div>
