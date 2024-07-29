@@ -9,8 +9,10 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = (props) => {
-  // https://video-conference-server-dzep.onrender.com
-  const socket = useMemo(() => io("localhost:8000"), []);
+  const socket = useMemo(
+    () => io("https://video-conference-server-dzep.onrender.com"),
+    []
+  );
 
   return (
     <SocketContext.Provider value={socket}>
