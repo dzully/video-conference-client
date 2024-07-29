@@ -101,8 +101,8 @@ const RoomPage = () => {
     const localStream = await getLocalAudioStream();
     if (localStream) {
       localStream.getTracks().forEach((track) => {
-        peer.addTrack(track, localStream);
-        console.log("Added local audio stream to peer connection");
+        console.log({ peer });
+        peer.peer.addTrack(track, localStream);
       });
     }
   }, []);
